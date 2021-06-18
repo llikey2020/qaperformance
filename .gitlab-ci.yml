@@ -4,6 +4,7 @@ default:
 stages:
   - setup
   - run
+  - cleanup
 
 variables:
     SPARK_IMAGE:
@@ -70,3 +71,10 @@ Verify docker image:
         --class org.apache.spark.examples.JavaWordCount \
         local:///opt/spark/examples/jars/spark-examples_2.12-3.0.2.jar \
         alluxio://${ALLUXIO_SVC}/matt/lorem.txt
+
+Cleanup environment:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  stage: cleanup
+  when: manual
+  script:
+    - bash cleanup-env.sh
