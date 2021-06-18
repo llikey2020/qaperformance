@@ -30,6 +30,7 @@ variables:
     before_script:
         # Create the Spark defaults file with the common opts
         - cd ${SPARK_CONF_DIR}
+        - mkdir conf/
         - |
           cat << EOF > conf/spark-defaults.conf
           spark.master                                            k8s://${KUBE_URL}
