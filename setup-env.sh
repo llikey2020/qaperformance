@@ -25,6 +25,7 @@ shortCircuit:
 tieredstore:
     levels:
     - level: 0
+      alias: SSD
       mediumtype: SSD
       path: /ssd
       name: alluxio-ssd
