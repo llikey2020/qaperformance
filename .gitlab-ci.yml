@@ -6,7 +6,6 @@ stages:
   - run
 
 variables:
-    NAMESPACE: ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_SHORT_SHA}
     SPARK_IMAGE:
         value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
         description: Spark container image to test
@@ -18,7 +17,7 @@ variables:
         description: Cache SSD quota
 
 .environment:
-    environment: ${NAMESPACE}
+    environment: testing
 
 # Jobs that run spark extend this hidden job
 .spark-run:

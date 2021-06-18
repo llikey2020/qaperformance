@@ -2,58 +2,6 @@
 
 set -ex
 
-cat << EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: psp-clusterrole-bind
-  namespace: ${NAMESPACE}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: psp-clusterrole
-subjects:
-- kind: ServiceAccount
-  name: ${NAMESPACE}-service-account
-  namespace: ${NAMESPACE}
-EOF
-
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: spark
-  namespace: ${NAMESPACE}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: psp-spark-bind
-  namespace: ${NAMESPACE}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: psp-clusterrole
-subjects:
-- kind: ServiceAccount
-  name: spark
-  namespace: ${NAMESPACE}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: spark-admin-bind
-  namespace: ${NAMESPACE}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: admin
-subjects:
-- kind: ServiceAccount
-  name: spark
-  namespace: ${NAMESPACE}
-EOF
-
 cat << EOF > alluxio.yaml
 properties:
     alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
@@ -85,4 +33,4 @@ tieredstore:
 EOF
 
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
-helm install alluxio -f alluxio.yaml alluxio-charts/alluxio -n ${ENVIRONMENT_NAME}
+helm install alluxio -f alluxio.yaml alluxio-charts/alluxio
