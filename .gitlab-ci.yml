@@ -54,7 +54,7 @@ Deploy Alluxio:
   extends:
       - .environment
   script:
-      - sed -i "s/_ALLUXIO_UFS_/${ALLUXIO_UFS}/g" alluxio.yaml
+      - sed -i "s|_ALLUXIO_UFS_|${ALLUXIO_UFS}|g" alluxio.yaml
       - sed -i "s/_AWS_ACCESS_KEY_ID_/${AWS_ACCESS_KEY_ID}/g" alluxio.yaml
       - sed -i "s/_AWS_SECRET_ACCESS_KEY_/${AWS_SECRET_ACCESS_KEY}/g" alluxio.yaml
       - sed -i "s/_CACHE_MEM_SIZE_/${CACHE_MEM_SIZE}/g" alluxio.yaml
