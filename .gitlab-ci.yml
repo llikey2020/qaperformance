@@ -1,0 +1,82 @@
+default:
+  tags: ["kubernetes"]
+
+stages:
+  - setup
+  - run
+
+variables:
+    ENVIRONMENT_NAME: ${CI_PROJECT_PATH}/${CI_PIPELINE_IID}
+    SPARK_IMAGE:
+        value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
+        description: Spark container image to test
+    CACHE_MEM_SIZE:
+        value: 1GB
+        description: Cache memory quota
+    CACHE_SSD_SIZE:
+        value: 10GB
+        description: Cache SSD quota
+
+.environment:
+    environment: ${ENVIRONMENT_NAME}
+
+# Jobs that run spark extend this hidden job
+.spark-run:
+    image: ${SPARK_IMAGE}
+    variables:
+        GIT_STRATEGY: none
+        SPARK_CONF_DIR: /tmp
+    before_script:
+        # Create the Spark defaults file with the common opts
+        - cd ${SPARK_CONF_DIR}
+        - |
+          cat << EOF > conf/spark-defaults.conf
+          spark.master                                            k8s://${KUBE_URL}
+          spark.kubernetes.report.interval                        60s
+          spark.driver.memory                                     8g
+          spark.executor.memory                                   8g
+          spark.kubernetes.driver.pod.name                        spark-driver
+          spark.kubernetes.authenticate.driver.serviceAccountName spark
+          spark.kubernetes.container.image                        ${SPARK_IMAGE}
+          spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
+          spark.jars.ivy                                          /tmp/.ivy
+          spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
+          spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
+          spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
+          spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+          spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+          spark.sql.warehouse.dir                                 alluxio:///spark-warehouse
+          EOF
+
+Deploy Alluxio:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  stage: setup
+  extends:
+      - .environment
+  script:
+      - sed -i "s/_ALLUXIO_UFS_/${ALLUXIO_UFS}/g" alluxio.yaml
+      - sed -i "s/_AWS_ACCESS_KEY_ID_/${AWS_ACCESS_KEY_ID}/g" alluxio.yaml
+      - sed -i "s/_AWS_SECRET_ACCESS_KEY_/${AWS_SECRET_ACCESS_KEY}/g" alluxio.yaml
+      - sed -i "s/_CACHE_MEM_SIZE_/${CACHE_MEM_SIZE}/g" alluxio.yaml
+      - sed -i "s/_CACHE_SSD_SIZE_/${CACHE_SSD_SIZE}/g" alluxio.yaml
+      - helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/enterprise/enterprise-2.5.0-2.0
+      - helm install alluxio -f alluxio.yaml alluxio-charts/alluxio -n ${ENVIRONMENT_NAME}
+
+.Verify docker image:
+  extends:
+    - .spark-run
+  stage: docker-verify
+  needs: ["Build docker image"]
+  environment:
+    name: verify
+  variables:
+    DRIVER_TAG: wc
+  script:
+    - cd /opt/spark
+    - |
+      ./bin/spark-submit \
+        --name "verification" \
+        --deploy-mode cluster \
+        --class org.apache.spark.examples.JavaWordCount \
+        local:///opt/spark/examples/jars/spark-examples_2.12-3.0.2.jar \
+        alluxio://${ALLUXIO_SVC}/matt/lorem.txt
