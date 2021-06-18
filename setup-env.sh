@@ -25,10 +25,10 @@ shortCircuit:
 tieredstore:
     levels:
     - level: 0
-    mediumtype: MEM, SSD
-    path: /dev/shm,/ssd
-    name: alluxio-mem,alluxio-ssd
-    quota: ${CACHE_MEM_SIZE},${CACHE_SSD_SIZE}
+    mediumtype: SSD
+    path: /ssd
+    name: alluxio-ssd
+    quota: ${CACHE_SSD_SIZE}
     type: emptyDir
 EOF
 

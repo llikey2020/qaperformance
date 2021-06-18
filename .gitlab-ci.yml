@@ -10,9 +10,6 @@ variables:
     SPARK_IMAGE:
         value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
         description: Spark container image to test
-    CACHE_MEM_SIZE:
-        value: 1GB
-        description: Cache memory quota
     CACHE_SSD_SIZE:
         value: 10GB
         description: Cache SSD quota
