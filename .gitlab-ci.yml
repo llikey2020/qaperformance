@@ -11,7 +11,7 @@ variables:
         value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
         description: Spark container image to test
     CACHE_SSD_SIZE:
-        value: 10GB
+        value: 10G
         description: Cache SSD quota
     ALLUXIO_SVC: alluxio-master-0:19998
 

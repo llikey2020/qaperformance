@@ -9,15 +9,15 @@ properties:
     alluxio.master.mount.table.root.option.aws.secretKey: ${AWS_SECRET_ACCESS_KEY}
     alluxio.underfs.s3.default.mode: 777
     alluxio.underfs.s3.inherit.acl: false
-    alluxio.security.authentication.type: "NOSASL"
+    alluxio.security.authentication.type: NOSASL
     alluxio.security.authorization.permission.enabled: false
 journal:
-    type: "UFS"
-    ufsType: "local"
-    folder: "/journal"
+    type: UFS
+    ufsType: local
+    folder: /journal
     size: 1Gi
     volumeType: emptyDir
-    medium: ""
+    medium: SSD
 master:
     count: 1
 shortCircuit:
