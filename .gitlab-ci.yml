@@ -23,13 +23,13 @@ variables:
     image: ${SPARK_IMAGE}
     variables:
         GIT_STRATEGY: none
-        SPARK_CONF_DIR: /tmp
+        SPARK_CONF_DIR: /tmp/spark/
     before_script:
         # Create the Spark defaults file with the common opts
+        - mkdir -p ${SPARK_CONF_DIR}
         - cd ${SPARK_CONF_DIR}
-        - mkdir conf/
         - |
-          cat << EOF > conf/spark-defaults.conf
+          cat << EOF > spark-defaults.conf
           spark.master                                            k8s://${KUBE_URL}
           spark.kubernetes.report.interval                        60s
           spark.driver.memory                                     8g
