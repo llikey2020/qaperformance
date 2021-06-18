@@ -17,7 +17,7 @@ journal:
     folder: /journal
     size: 1Gi
     volumeType: emptyDir
-    medium: SSD
+    medium: ""
 master:
     count: 1
 shortCircuit:
