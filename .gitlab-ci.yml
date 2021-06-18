@@ -6,7 +6,7 @@ stages:
   - run
 
 variables:
-    ENVIRONMENT_NAME: ${CI_PROJECT_PATH}/${CI_PIPELINE_IID}
+    NAMESPACE: ${CI_PROJECT_PATH}/${CI_PIPELINE_IID}
     SPARK_IMAGE:
         value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
         description: Spark container image to test
@@ -18,7 +18,7 @@ variables:
         description: Cache SSD quota
 
 .environment:
-    environment: ${ENVIRONMENT_NAME}
+    environment: ${NAMESPACE}
 
 # Jobs that run spark extend this hidden job
 .spark-run:
@@ -48,19 +48,13 @@ variables:
           spark.sql.warehouse.dir                                 alluxio:///spark-warehouse
           EOF
 
-Deploy Alluxio:
+Setup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: setup
   extends:
       - .environment
   script:
-      - sed -i "s|_ALLUXIO_UFS_|${ALLUXIO_UFS}|g" alluxio.yaml
-      - sed -i "s/_AWS_ACCESS_KEY_ID_/${AWS_ACCESS_KEY_ID}/g" alluxio.yaml
-      - sed -i "s/_AWS_SECRET_ACCESS_KEY_/${AWS_SECRET_ACCESS_KEY}/g" alluxio.yaml
-      - sed -i "s/_CACHE_MEM_SIZE_/${CACHE_MEM_SIZE}/g" alluxio.yaml
-      - sed -i "s/_CACHE_SSD_SIZE_/${CACHE_SSD_SIZE}/g" alluxio.yaml
-      - helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
-      - helm install alluxio -f alluxio.yaml alluxio-charts/alluxio -n ${ENVIRONMENT_NAME}
+      - bash setup-env.sh
 
 .Verify docker image:
   extends:
