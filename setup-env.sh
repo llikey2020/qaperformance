@@ -25,11 +25,11 @@ shortCircuit:
 tieredstore:
     levels:
     - level: 0
-    mediumtype: SSD
-    path: /ssd
-    name: alluxio-ssd
-    quota: ${CACHE_SSD_SIZE}
-    type: emptyDir
+      mediumtype: SSD
+      path: /ssd
+      name: alluxio-ssd
+      quota: ${CACHE_SSD_SIZE}
+      type: emptyDir
 EOF
 
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
