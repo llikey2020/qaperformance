@@ -15,6 +15,7 @@ variables:
     CACHE_SSD_SIZE:
         value: 10GB
         description: Cache SSD quota
+    ALLUXIO_SVC: alluxio-master-0:19998
 
 .environment:
     environment: testing
@@ -55,15 +56,11 @@ Setup environment:
   script:
       - bash setup-env.sh
 
-.Verify docker image:
+Verify docker image:
   extends:
+    - .environment
     - .spark-run
-  stage: docker-verify
-  needs: ["Build docker image"]
-  environment:
-    name: verify
-  variables:
-    DRIVER_TAG: wc
+  stage: run
   script:
     - cd /opt/spark
     - |
