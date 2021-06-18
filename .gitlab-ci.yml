@@ -55,6 +55,7 @@ Setup environment:
   extends:
       - .environment
   script:
+      - bash cleanup-env.sh || true
       - bash setup-env.sh
 
 Verify docker image:
