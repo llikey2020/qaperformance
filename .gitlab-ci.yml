@@ -112,7 +112,9 @@ TPCDS:
 TPCH-small-partition:
   rules:
     - if: '$JOB == "RunTPCHSmallDatePartition"'
-  extends: .performance
+  extends:
+    - .environment
+    - .spark-run
   stage: run
   script:
     - cd /opt/spark
