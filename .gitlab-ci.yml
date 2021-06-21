@@ -145,12 +145,16 @@ TPCH-large-partition:
 Collect logs:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: collect
+  extends:
+    - .environment
   script:
     - kubectl logs spark-driver
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: cleanup
+  extends:
+    - .environment
   when: manual
   script:
     - bash cleanup-env.sh
