@@ -11,6 +11,9 @@ variables:
   JOB:
     value: JavaWordCount
     description: JavaWordCount, RunTPCDS, RunTPCHSmallDatePartition, RunTPCHLargeDatePartition
+  SPARK_IMAGE:
+    value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
+    description: Spark container image to test
   SPARK_DRIVER_MEMORY:
     value: 8g
     description: spark.driver.memory
@@ -20,19 +23,13 @@ variables:
   CACHE_SSD_SIZE:
     value: 10G
     description: Cache SSD quota
-  SPARK_IMAGE:
-    value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
-    description: Spark container image to test
   SPARK_WAREHOUSE:
     value: spark-warehouse/
     description: Path in Alluxio UFS for the Spark SQL warehouse files
   SPARK_SQL_PERF_JAR:
     value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
     description: Path in Alluxio UFS for the Spark SQL performance jar
-  ALLUXIO_SHORT_CIRCUIT_HOSTPATH:
-    value: /mnt/performance-47-testing/alluxio
-    description: Path on k8s nodes for hostPath volume used by Alluxio and Spark
-  ALLUXIO_SVC: alluxio-master-0:19998
+  ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
   # - AWS_ACCESS_KEY_ID
@@ -67,10 +64,6 @@ variables:
       spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
       spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      spark.kubernetes.executor.volumes.hostPath.alluxio-domain.mount.path     /opt/domain
-      spark.kubernetes.executor.volumes.hostPath.alluxio-domain.mount.readOnly true
-      spark.kubernetes.executor.volumes.hostPath.alluxio-domain.options.path   ${ALLUXIO_SHORT_CIRCUIT_HOSTPATH}
-      spark.kubernetes.executor.volumes.hostPath.alluxio-domain.options.type   Directory
       spark.sql.warehouse.dir                                 alluxio://${SPARK_WAREHOUSE}
       EOF
     - cat spark-defaults.conf
@@ -93,6 +86,7 @@ Verify docker image:
   stage: run
   script:
     - cd /opt/spark
+    - sleep 600
     - |
       ./bin/spark-submit \
         --name "verification" \
