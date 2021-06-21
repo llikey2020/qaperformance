@@ -1,7 +1,11 @@
 #!/bin/bash
 
 perfLogs="$1"    # file containing the entire log of the performance run 
-perfRes="$2"   # file to write the parsed results
+
+CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
+DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
+
+perfResults="perfResults_${DATE_TIME}.txt"
 
 # NAME="name"
 # PARSETIME="parsingTime"
@@ -12,6 +16,8 @@ perfRes="$2"   # file to write the parsed results
 
 # An map of field names to their column number
 declare -A fields=( [NAME]=1 [PARSETIME]=6 [ANALYSISTIME]=7 [OPTIMIZETIME]=8 [PLANTIME]=9 [EXECUTETIME]=10 )
+
+resultFields=( "NAME" "PARSETIME" "ANALYSISTIME" "OPTIMIZETIME" "PLANTIME" "EXECUTETIME" "TOTALTIME" )
 
 
 # Takes in one line in the tpch result table and parses the results into the row map
@@ -25,7 +31,7 @@ function parseFields()
     local entryNum=$2
 
     line=$( echo ${line} | tr -d " " | tr "|" " " )
-    echo $line
+    # echo $line
 
     for field in ${!fields[@]}; do
         row[${field}]+=$( echo $line | awk "{print \$${fields[$field]}}" )
@@ -41,19 +47,19 @@ function parseFields()
     done
     row[TOTALTIME]+=$totalTime
 
-    declare -p row
-    echo ""
-
-    # for field in ${!fields[@]}; do
-    #     echo $field: ${row[$field]}
-    # done
+    echo "" >> "${perfResults}"
+    for field in ${resultFields[@]}; do
+        echo $field: ${row[$field]} >> "${perfResults}"
+    done
 
     # clear the map for the next entry in the tpch results
     unset row
 }
 
 # Filter out all the log messages except for the table containing the final results
-cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' > "$perfRes"
+cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' | tr -d '\000' > "${perfResults}"
+echo "" >> "${perfResults}"
+
 
 entryNum=0
 
@@ -67,4 +73,4 @@ do
     parseFields "${line}" $entryNum
     (( entryNum+=1 ))
   fi
-done < "$perfRes"
+done < "${perfResults}"
