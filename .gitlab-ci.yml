@@ -4,6 +4,7 @@ default:
 stages:
   - setup
   - run
+  - collect
   - cleanup
 
 variables:
@@ -140,6 +141,12 @@ TPCH-large-partition:
         --name "tpch parge partition" \
         --class com.databricks.spark.sql.perf.RunTPCHLargeDatePartition \
         alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
+
+Collect logs:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  stage: collect
+  script:
+    - kubectl logs spark-driver
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
