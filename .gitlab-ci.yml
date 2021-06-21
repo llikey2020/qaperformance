@@ -86,7 +86,6 @@ Verify docker image:
   stage: run
   script:
     - cd /opt/spark
-    - sleep 600
     - |
       ./bin/spark-submit \
         --name "verification" \
