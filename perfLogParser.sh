@@ -1,7 +1,7 @@
 #!/bin/bash
 
-perfLogs="/home/tony/performance/tpch-small.txt"    # file containing the entire log of the performance run 
-perfRes="/home/tony/performance/tpch_results.txt"   # file to write the parsed results
+perfLogs="$1"    # file containing the entire log of the performance run 
+perfRes="$2"   # file to write the parsed results
 
 # NAME="name"
 # PARSETIME="parsingTime"

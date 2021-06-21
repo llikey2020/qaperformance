@@ -151,6 +151,17 @@ Collect logs:
     - .environment
   script:
     - kubectl logs spark-driver
+  
+Parse logs:
+  rules:
+    - if: '$JOB != "JavaWordCount"'
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  stage: collect
+  extends:
+    - .environment
+  script:
+    - kubectl logs spark-driver > resultLogs.txt
+    - bash perfLogParser.sh resultLogs.txt parsedResults.txt
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
