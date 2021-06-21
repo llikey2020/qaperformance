@@ -161,7 +161,7 @@ Parse logs:
     - .environment
   script:
     - kubectl logs spark-driver > resultLogs.txt
-    - bash perfLogParser.sh resultLogs.txt parsedResults.txt
+    - bash perfLogParser.sh resultLogs.txt
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
