@@ -10,7 +10,7 @@ stages:
 variables:
   JOB:
     value: JavaWordCount
-    description: JavaWordCount, RunTPCDS, RunTPCHSmallDatePartition, RunTPCHLargeDatePartition
+    description: JavaWordCount, SampleResult, RunTPCDS, RunTPCHSmallDatePartition, RunTPCHLargeDatePartition
   SPARK_IMAGE:
     value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
     description: Spark container image to test
@@ -95,6 +95,21 @@ Verify docker image:
         --class org.apache.spark.examples.JavaWordCount \
         local:///opt/spark/examples/jars/spark-examples_2.12-3.0.2.jar \
         alluxio://${ALLUXIO_SVC}/matt/lorem.txt
+
+Sample Performance Result:
+  rules:
+    - if: '$JOB == "SampleResult"'
+  extends:
+    - .environment
+    - .spark-run
+  stage: run
+  script:
+    - cd /opt/spark
+    - |
+      ./bin/spark-submit \
+        --name "sample" \
+        --deploy-mode cluster \
+        examplePerfResult.py \
 
 TPCDS:
   rules:
