@@ -7,56 +7,78 @@ stages:
   - cleanup
 
 variables:
-    SPARK_IMAGE:
-        value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
-        description: Spark container image to test
-    CACHE_SSD_SIZE:
-        value: 10G
-        description: Cache SSD quota
-    ALLUXIO_SVC: alluxio-master-0:19998
+  JOB:
+    value: JavaWordCount
+    description: JavaWordCount, RunTPCDS, RunTPCHSmallDatePartition, RunTPCHLargeDatePartition
+  SPARK_IMAGE:
+    value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
+    description: Spark container image to test
+  SPARK_DRIVER_MEMORY:
+    value: 8g
+    description: spark.driver.memory
+  SPARK_EXECUTOR_MEMORY:
+    value: 8g
+    description: spark.executor.memory
+  CACHE_SSD_SIZE:
+    value: 10G
+    description: Cache SSD quota
+  SPARK_WAREHOUSE:
+    value: spark-warehouse/
+    description: Path in Alluxio UFS for the Spark SQL warehouse files
+  SPARK_SQL_PERF_JAR:
+    value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
+    description: Path in Alluxio UFS for the Spark SQL performance jar
+  ALLUXIO_SVC: alluxio-master-0:19998
+  # Project variables configured in Settings -> CI/CD -> Variables:
+  # - ALLUXIO_UFS
+  # - AWS_ACCESS_KEY_ID
+  # - AWS_SECRET_ACCESS_KEY
 
 .environment:
-    environment: testing
+  environment: testing
 
 # Jobs that run spark extend this hidden job
 .spark-run:
-    image: ${SPARK_IMAGE}
-    variables:
-        GIT_STRATEGY: none
-        SPARK_CONF_DIR: /tmp/spark/
-    before_script:
-        # Create the Spark defaults file with the common opts
-        - mkdir -p ${SPARK_CONF_DIR}
-        - cd ${SPARK_CONF_DIR}
-        - |
-          cat << EOF > spark-defaults.conf
-          spark.master                                            k8s://${KUBE_URL}
-          spark.kubernetes.report.interval                        60s
-          spark.driver.memory                                     8g
-          spark.executor.memory                                   8g
-          spark.kubernetes.driver.pod.name                        spark-driver
-          spark.kubernetes.authenticate.driver.serviceAccountName spark
-          spark.kubernetes.container.image                        ${SPARK_IMAGE}
-          spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
-          spark.jars.ivy                                          /tmp/.ivy
-          spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
-          spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
-          spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
-          spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-          spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-          spark.sql.warehouse.dir                                 alluxio:///spark-warehouse
-          EOF
+  image: ${SPARK_IMAGE}
+  variables:
+    GIT_STRATEGY: none
+    SPARK_CONF_DIR: /tmp/spark/
+  before_script:
+    # Create the Spark defaults file with the common opts
+    - mkdir -p ${SPARK_CONF_DIR}
+    - cd ${SPARK_CONF_DIR}
+    - |
+      cat << EOF > spark-defaults.conf
+      spark.master                                            k8s://${KUBE_URL}
+      spark.kubernetes.report.interval                        60s
+      spark.driver.memory                                     ${SPARK_DRIVER_MEMORY}
+      spark.executor.memory                                   ${SPARK_EXECUTOR_MEMORY}
+      spark.kubernetes.driver.pod.name                        spark-driver
+      spark.kubernetes.authenticate.driver.serviceAccountName spark
+      spark.kubernetes.container.image                        ${SPARK_IMAGE}
+      spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
+      spark.jars.ivy                                          /tmp/.ivy
+      spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
+      spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
+      spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
+      spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      spark.sql.warehouse.dir                                 alluxio://${SPARK_WAREHOUSE}
+      EOF
+    - cat spark-defaults.conf
 
 Setup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: setup
   extends:
-      - .environment
+    - .environment
   script:
-      - bash cleanup-env.sh || true
-      - bash setup-env.sh
+    - bash cleanup-env.sh || true
+    - bash setup-env.sh
 
 Verify docker image:
+  rules:
+    - if: '$JOB == "JavaWordCount"'
   extends:
     - .environment
     - .spark-run
@@ -70,6 +92,52 @@ Verify docker image:
         --class org.apache.spark.examples.JavaWordCount \
         local:///opt/spark/examples/jars/spark-examples_2.12-3.0.2.jar \
         alluxio://${ALLUXIO_SVC}/matt/lorem.txt
+
+TPCDS:
+  rules:
+    - if: '$JOB == "RunTPCDS"'
+  extends:
+    - .environment
+    - .spark-run
+  stage: run
+  script:
+    - cd /opt/spark
+    - |
+      ./bin/spark-submit \
+        --deploy-mode cluster \
+        --name "tpcds" \
+        --class com.databricks.spark.sql.perf.RunTPCDS \
+        alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
+
+TPCH-small-partition:
+  rules:
+    - if: '$JOB == "RunTPCHSmallDatePartition"'
+  extends: .performance
+  stage: run
+  script:
+    - cd /opt/spark
+    - |
+      ./bin/spark-submit \
+        --deploy-mode cluster \
+        --name "tpch small partition" \
+        --class com.databricks.spark.sql.perf.RunTPCHSmallDatePartition \
+        alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
+
+TPCH-large-partition:
+  rules:
+    - if: '$JOB == "RunTPCHLargeDatePartition"'
+  extends:
+    - .environment
+    - .spark-run
+  stage: run
+  script:
+    - cd /opt/spark
+    - |
+      ./bin/spark-submit \
+        --deploy-mode cluster \
+        --name "tpch parge partition" \
+        --class com.databricks.spark.sql.perf.RunTPCHLargeDatePartition \
+        alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm

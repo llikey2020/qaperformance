@@ -2,6 +2,9 @@
 
 set -ex
 
+# The ALLUXIO_UFS and AWS_* env vars need to be setup before running
+# In GitLab, these are stored as project variables in Settings -> CI/CD -> Variables
+
 cat << EOF > alluxio.yaml
 properties:
     alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
