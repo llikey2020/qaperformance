@@ -24,7 +24,11 @@ journal:
 master:
     count: 1
 shortCircuit:
-    enabled: false
+  enabled: true
+  policy: uuid
+  size: 1Gi
+  volumeType: hostPath
+  hostPath: ${ALLUXIO_SHORT_CIRCUIT_HOSTPATH}
 tieredstore:
     levels:
     - level: 0
