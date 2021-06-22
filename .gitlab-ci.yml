@@ -115,7 +115,7 @@ Sample Performance Result:
         --name "sample" \
         --deploy-mode cluster \
         --class "SampleResult" \
-        http://172.20.3.155:8000/sampleresult_2.12-0.1.jar "http://172.20.3.155:8000/exampleResult.txt"
+        http://172.20.3.155:8000/sampleresult_2.12-0.1.jar
 
 TPCDS:
   rules:
