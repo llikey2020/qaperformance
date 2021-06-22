@@ -33,6 +33,7 @@ variables:
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
+  HTTP_SVC: http
   SPARK_DRIVER_POD_NAME: spark-driver
   SPARK_LOG: spark.log
   # Project variables configured in Settings -> CI/CD -> Variables:
@@ -81,6 +82,7 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
+    - 'kubectl cp * ${HTTP_SVC}:/usr/share/nginx/html/'
 
 Verify docker image:
   rules:
@@ -116,8 +118,8 @@ Sample Performance Result:
         --deploy-mode cluster \
         --class "SampleResult" \
         --conf spark.kubernetes.file.upload.path=/tmp \
-        file://${CI_PROJECT_DIR}/sampleresult_2.12-0.1.jar \
-        file://${CI_PROJECT_DIR}/exampleResult.txt
+        http://${HTTP_SVC}/sampleresult_2.12-0.1.jar \
+        http://${HTTP_SVC}/exampleResult.txt
 
 TPCDS:
   rules:
