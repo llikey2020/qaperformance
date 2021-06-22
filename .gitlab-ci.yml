@@ -165,6 +165,8 @@ TPCH-large-partition:
         alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
 
 Collect logs:
+  rules:
+    - if: '$JOB != "JavaWordCount"'
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: collect
   extends:
@@ -176,8 +178,8 @@ Collect logs:
       - ${SPARK_LOG}
   
 Parse logs:
-  rules:
-    - if: '$JOB != "JavaWordCount"'
+  needs:
+    - Collect logs
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: parse
   script:
