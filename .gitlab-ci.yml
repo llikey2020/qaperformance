@@ -114,7 +114,8 @@ Sample Performance Result:
       ./bin/spark-submit \
         --name "sample" \
         --deploy-mode cluster \
-        ${CI_PROJECT_DIR}/examplePerfResult.py
+        --class "SampleResult" \
+        ${CI_PROJECT_DIR}/sampleresult_2.12-0.1.jar ${CI_PROJECT_DIR}/exampleResult.txt
 
 TPCDS:
   rules:
