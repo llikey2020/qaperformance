@@ -115,7 +115,9 @@ Sample Performance Result:
         --name "sample" \
         --deploy-mode cluster \
         --class "SampleResult" \
-        http://172.20.3.155:8000/sampleresult_2.12-0.1.jar
+        --conf spark.kubernetes.file.upload.path=/tmp \
+        file://${CI_PROJECT_DIR}/sampleresult_2.12-0.1.jar \
+        file://${CI_PROJECT_DIR}/exampleResult.txt
 
 TPCDS:
   rules:
