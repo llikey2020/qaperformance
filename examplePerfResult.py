@@ -13,7 +13,7 @@ if __name__ == "__main__":
         .appName("examplePerfResultApp")\
         .getOrCreate()
 
-    f = open("exampleResult.txt", "r")
+    f = open("/builds/sequoiadp/performance/exampleResult.txt", "r")
     print(f.read())
     spark.stop()
 

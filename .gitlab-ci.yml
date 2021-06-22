@@ -115,7 +115,7 @@ Sample Performance Result:
       ./bin/spark-submit \
         --name "sample" \
         --deploy-mode cluster \
-        examplePerfResult.py \
+        /builds/sequoiadp/performance/examplePerfResult.py
 
 TPCDS:
   rules:
