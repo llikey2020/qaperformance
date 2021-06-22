@@ -106,10 +106,6 @@ Sample Performance Result:
     GIT_STRATEGY: clone
   stage: run
   script:
-    - |
-      cp ${CI_BUILDS_DIR}/sequoiadp/performance/examplePerfResult.py \
-      ${CI_BUILDS_DIR}/sequoiadp/performance/exampleResult.txt \
-      /opt/spark
     - cd /opt/spark
     - |
       ./bin/spark-submit \
