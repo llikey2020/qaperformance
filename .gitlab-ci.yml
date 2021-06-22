@@ -106,7 +106,10 @@ Sample Performance Result:
     GIT_STRATEGY: clone
   stage: run
   script:
-    - ls ${CI_BUILDS_DIR}
+    - ls
+    - ls ${CI_BUILDS_DIR}/sequoiadp
+    - find . -name examplePerfResult.py
+    - find ${CI_BUILDS_DIR} -name examplePerfResult.py
     - cp ${CI_BUILDS_DIR}/examplePerfResult.py ${CI_BUILDS_DIR}/exampleResult.txt /opt/spark
     - cd /opt/spark
     - |
