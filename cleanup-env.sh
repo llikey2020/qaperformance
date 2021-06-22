@@ -3,4 +3,4 @@
 set -ex
 
 helm uninstall alluxio alluxio-charts/alluxio || true
-kubectl delete pod spark-driver --wait || true
+kubectl delete pod ${SPARK_DRIVER_POD_NAME} --wait || true

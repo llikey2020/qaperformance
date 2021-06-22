@@ -5,6 +5,7 @@ stages:
   - setup
   - run
   - collect
+  - parse
   - cleanup
 
 variables:
@@ -32,6 +33,8 @@ variables:
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
+  SPARK_DRIVER_POD_NAME: spark-driver
+  SPARK_LOG: spark.log
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
   # - AWS_ACCESS_KEY_ID
@@ -56,7 +59,7 @@ variables:
       spark.kubernetes.report.interval                        60s
       spark.driver.memory                                     ${SPARK_DRIVER_MEMORY}
       spark.executor.memory                                   ${SPARK_EXECUTOR_MEMORY}
-      spark.kubernetes.driver.pod.name                        spark-driver
+      spark.kubernetes.driver.pod.name                        ${SPARK_DRIVER_POD_NAME}
       spark.kubernetes.authenticate.driver.serviceAccountName spark
       spark.kubernetes.container.image                        ${SPARK_IMAGE}
       spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
@@ -111,7 +114,7 @@ Sample Performance Result:
       ./bin/spark-submit \
         --name "sample" \
         --deploy-mode cluster \
-        /builds/sequoiadp/performance/examplePerfResult.py
+        ${CI_PROJECT_DIR}/examplePerfResult.py
 
 TPCDS:
   rules:
@@ -167,18 +170,17 @@ Collect logs:
   extends:
     - .environment
   script:
-    - kubectl logs spark-driver
+    - kubectl logs spark-driver > ${SPARK_LOG}
+  artifacts:
+    paths:
+      - ${SPARK_LOG}
   
 Parse logs:
   rules:
     - if: '$JOB != "JavaWordCount"'
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
-  stage: collect
-  extends:
-    - .environment
-  script:
-    - kubectl logs spark-driver > resultLogs.txt
-    - bash perfLogParser.sh resultLogs.txt
+  stage: parse
+    - bash perfLogParser.sh ${SPARK_LOG}
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
