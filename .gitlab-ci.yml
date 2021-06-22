@@ -180,6 +180,7 @@ Parse logs:
     - if: '$JOB != "JavaWordCount"'
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
   stage: parse
+  script:
     - bash perfLogParser.sh ${SPARK_LOG}
 
 Cleanup environment:
