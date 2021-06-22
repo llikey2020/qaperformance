@@ -56,8 +56,17 @@ function parseFields()
     unset row
 }
 
+echo "JOB: ${JOB}" >> "${perfResults}"
+echo "SPARK_IMAGE: ${SPARK_IMAGE}" >> "${perfResults}"
+echo "SPARK_DRIVER_MEMORY: ${SPARK_DRIVER_MEMORY}" >> "${perfResults}"
+echo "SPARK_EXECUTOR_MEMORY: ${SPARK_EXECUTOR_MEMORY}" >> "${perfResults}"
+echo "CACHE_SSD_SIZE: ${CACHE_SSD_SIZE}" >> "${perfResults}"
+echo "SPARK_SQL_PERF_JAR: ${SPARK_SQL_PERF_JAR}" >> "${perfResults}"
+echo "ALLUXIO_VERSION: ${ALLUXIO_VERSION}" >> "${perfResults}"
+echo "SPARK_DRIVER_POD_NAME: ${SPARK_DRIVER_POD_NAME}" >> "${perfResults}"
+
 # Filter out all the log messages except for the table containing the final results
-cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' | tr -d '\000' > "${perfResults}"
+cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' | tr -d '\000' >> "${perfResults}"
 echo "" >> "${perfResults}"
 
 
@@ -74,3 +83,7 @@ do
     (( entryNum+=1 ))
   fi
 done < "${perfResults}"
+
+
+# remove this later
+cat "${perfResults}"
