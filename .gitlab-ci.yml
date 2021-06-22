@@ -33,7 +33,7 @@ variables:
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
-  HTTP_SVC: http
+  HTTP_SVC: file-server
   SPARK_DRIVER_POD_NAME: spark-driver
   SPARK_LOG: spark.log
   # Project variables configured in Settings -> CI/CD -> Variables:
@@ -82,7 +82,8 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
-    - 'kubectl cp * ${HTTP_SVC}:/usr/share/nginx/html/'
+    - 'ls *.jar'
+    - 'kubectl cp *.jar ${HTTP_SVC}:/usr/share/nginx/html/'
 
 Verify docker image:
   rules:
