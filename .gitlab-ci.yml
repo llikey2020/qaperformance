@@ -104,9 +104,9 @@ Sample Performance Result:
     - .spark-run
   variables:
     GIT_STRATEGY: clone
+    GIT_CLONE_PATH: /opt/spark
   stage: run
   script:
-    - cp examplePerfResult.py exampleResult.txt /opt/spark
     - cd /opt/spark
     - |
       ./bin/spark-submit \
