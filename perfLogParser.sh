@@ -2,10 +2,10 @@
 
 perfLogs="$1"    # file containing the entire log of the performance run 
 
-CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
-DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
+# CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
+# DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
 
-perfResults="${PARSED_RESULT}"
+perfResults="${PARSED_RESULT}"      # file to output the parsed results
 
 # NAME="name"
 # PARSETIME="parsingTime"
@@ -56,6 +56,7 @@ function parseFields()
     unset row
 }
 
+echo "TIME: ${CI_JOB_STARTED_AT}" >> "${perfResults}"
 echo "JOB: ${JOB}" >> "${perfResults}"
 echo "SPARK_IMAGE: ${SPARK_IMAGE}" >> "${perfResults}"
 echo "SPARK_DRIVER_MEMORY: ${SPARK_DRIVER_MEMORY}" >> "${perfResults}"
