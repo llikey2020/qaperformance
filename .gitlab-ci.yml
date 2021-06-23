@@ -83,7 +83,6 @@ Setup environment:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
     - 'ls *.jar'
-    - 'kubectl cp *.jar ${HTTP_SVC}:/usr/share/nginx/html/'
 
 Verify docker image:
   rules:
