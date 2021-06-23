@@ -39,4 +39,6 @@ EOF
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
-kubectl run --image=nginx --wait=true --port=80 ${HTTP_SVC}
+kubectl run --image=nginx --port=80 ${HTTP_SVC}
+kubectl wait --for=condition=Ready pod/${HTTP_SVC}
+kubectl expose pod ${HTTP_SVC} --port=80 --target-port=80
