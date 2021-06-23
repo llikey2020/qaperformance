@@ -42,7 +42,7 @@ function parseFields()
     for field in ${!fields[@]}; do
         if [[ ${field} != "NAME" ]]; then
             [[ "${row[${field}]}" == *"E-"* ]] && continue
-            totalTime=$( echo $totalTime + ${row[${field}]} | bc -l )
+            totalTime=$( echo - | awk "{print ${totalTime} + ${row[${field}]}}" )
         fi
     done
     row[TOTALTIME]+=$totalTime
