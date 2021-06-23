@@ -75,7 +75,7 @@ variables:
     - cat spark-defaults.conf
 
 Setup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   stage: setup
   extends:
     - .environment
@@ -188,13 +188,13 @@ Parse logs:
     - if: '$JOB != "JavaWordCount"'
   needs:
     - Collect logs
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   stage: parse
   script:
     - bash perfLogParser.sh ${SPARK_LOG}
 
 Cleanup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   stage: cleanup
   extends:
     - .environment
