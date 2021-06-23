@@ -56,15 +56,15 @@ function parseFields()
     unset row
 }
 
-echo "TIME: ${CI_JOB_STARTED_AT}" >> "${perfResults}"
-echo "JOB: ${JOB}" >> "${perfResults}"
-echo "SPARK_IMAGE: ${SPARK_IMAGE}" >> "${perfResults}"
-echo "SPARK_DRIVER_MEMORY: ${SPARK_DRIVER_MEMORY}" >> "${perfResults}"
-echo "SPARK_EXECUTOR_MEMORY: ${SPARK_EXECUTOR_MEMORY}" >> "${perfResults}"
-echo "CACHE_SSD_SIZE: ${CACHE_SSD_SIZE}" >> "${perfResults}"
-echo "SPARK_SQL_PERF_JAR: ${SPARK_SQL_PERF_JAR}" >> "${perfResults}"
-echo "ALLUXIO_VERSION: ${ALLUXIO_VERSION}" >> "${perfResults}"
-echo "SPARK_DRIVER_POD_NAME: ${SPARK_DRIVER_POD_NAME}" >> "${perfResults}"
+printf "%-24s %s\n" TIME: "${CI_JOB_STARTED_AT}" >> "${perfResults}"
+printf "%-24s %s\n" JOB: "${JOB}" >> "${perfResults}"
+printf "%-24s %s\n" SPARK_IMAGE: "${SPARK_IMAGE}" >> "${perfResults}"
+printf "%-24s %s\n" SPARK_DRIVER_MEMORY: "${SPARK_DRIVER_MEMORY}" >> "${perfResults}"
+printf "%-24s %s\n" SPARK_EXECUTOR_MEMORY: "${SPARK_EXECUTOR_MEMORY}" >> "${perfResults}"
+printf "%-24s %s\n" CACHE_SSD_SIZE: "${CACHE_SSD_SIZE}" >> "${perfResults}"
+printf "%-24s %s\n" SPARK_SQL_PERF_JAR: "${SPARK_SQL_PERF_JAR}" >> "${perfResults}"
+printf "%-24s %s\n" ALLUXIO_VERSION: "${ALLUXIO_VERSION}" >> "${perfResults}"
+printf "%-24s %s\n\n" SPARK_DRIVER_POD_NAME: "${SPARK_DRIVER_POD_NAME}" >> "${perfResults}"
 
 # Filter out all the log messages except for the table containing the final results
 cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' | tr -d '\000' >> "${perfResults}"
