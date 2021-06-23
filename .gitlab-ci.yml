@@ -118,7 +118,7 @@ Sample Performance Result:
         --deploy-mode cluster \
         --files sampleresult_2.12-0.1.jar
         --class "SampleResult" \
-        --conf spark.kubernetes.file.upload.path=${CI_PROJECT_DIR}
+        --conf spark.kubernetes.file.upload.path=${CI_PROJECT_DIR} \
         local://${CI_PROJECT_DIR}/sampleresult_2.12-0.1.jar
 
 TPCDS:
