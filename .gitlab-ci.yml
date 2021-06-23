@@ -111,6 +111,7 @@ Sample Performance Result:
     GIT_STRATEGY: clone
   stage: run
   script:
+    - echo ${CI_JOB_STARTED_AT}
     - cd /opt/spark
     - |
       ./bin/spark-submit \
