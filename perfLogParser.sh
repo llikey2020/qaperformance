@@ -2,10 +2,10 @@
 
 perfLogs="$1"    # file containing the entire log of the performance run 
 
-CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
-DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
+# CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
+# DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
 
-perfResults="perfResults_${DATE_TIME}.txt"
+perfResults="${PARSED_RESULT}"
 
 # NAME="name"
 # PARSETIME="parsingTime"
@@ -42,7 +42,7 @@ function parseFields()
     for field in ${!fields[@]}; do
         if [[ ${field} != "NAME" ]]; then
             [[ "${row[${field}]}" == *"E-"* ]] && continue
-            totalTime=$( echo - | awk "{print ${totalTime} + ${row[${field}]}}" )
+            totalTime=$( echo - | awk "{printf \"%f\", ${totalTime} + ${row[${field}]}}" )
         fi
     done
     row[TOTALTIME]+=$totalTime
@@ -56,6 +56,7 @@ function parseFields()
     unset row
 }
 
+echo "TIME: ${CI_JOB_STARTED_AT}" >> "${perfResults}"
 echo "JOB: ${JOB}" >> "${perfResults}"
 echo "SPARK_IMAGE: ${SPARK_IMAGE}" >> "${perfResults}"
 echo "SPARK_DRIVER_MEMORY: ${SPARK_DRIVER_MEMORY}" >> "${perfResults}"
