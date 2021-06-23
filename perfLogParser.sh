@@ -5,7 +5,7 @@ perfLogs="$1"    # file containing the entire log of the performance run
 CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
 DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
 
-perfResults="perfResults_${DATE_TIME}.txt"
+perfResults="${PARSED_RESULT}"
 
 # NAME="name"
 # PARSETIME="parsingTime"
