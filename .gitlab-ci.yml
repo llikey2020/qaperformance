@@ -177,11 +177,11 @@ Collect logs:
     SPARK_LOG: spark.log
   script:
     - kubectl logs spark-driver > ${SPARK_LOG}
-    - export PARSED_RESULT="perfResults_$(echo ${CI_JOB_STARTED_AT} | tr ":" "-").log"
+    - export PARSED_RESULT=${CI_JOB_STARTED_AT}.log
     - bash perfLogParser.sh ${SPARK_LOG}
   artifacts:
     paths:
-      - ${PARSED_RESULT}
+      - ${CI_JOB_STARTED_AT}.log
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
