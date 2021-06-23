@@ -175,9 +175,9 @@ Collect logs:
     - .environment
   variables:
     - SPARK_LOG: spark.log
-    - PARSED_RESULT: perfResults_$(echo ${CI_JOB_STARTED_AT} | tr ":" "-" ).log
   script:
     - kubectl logs spark-driver > ${SPARK_LOG}
+    - export PARSED_RESULT="perfResults_$(echo ${CI_JOB_STARTED_AT} | tr ":" "-").log"
     - bash perfLogParser.sh ${SPARK_LOG}
   artifacts:
     paths:
