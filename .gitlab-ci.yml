@@ -68,7 +68,7 @@ variables:
       spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
       spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      spark.sql.warehouse.dir                                 alluxio://${SPARK_WAREHOUSE}
+      spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
       EOF
     - cat spark-defaults.conf
 
@@ -175,13 +175,13 @@ Collect logs:
     - .environment
   variables:
     SPARK_LOG: spark.log
+    PARSED_RESULT: ${CI_JOB_STARTED_AT}.log
   script:
     - kubectl logs spark-driver > ${SPARK_LOG}
-    - export PARSED_RESULT=${CI_JOB_STARTED_AT}.log
     - bash perfLogParser.sh ${SPARK_LOG}
   artifacts:
     paths:
-      - ${CI_JOB_STARTED_AT}.log
+      - ${PARSED_RESULT}
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm
