@@ -32,6 +32,7 @@ variables:
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
+  SPARK_DEPENDENCY_DIR: spark-files/
   SPARK_DRIVER_POD_NAME: spark-driver
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
@@ -113,7 +114,7 @@ Sample Performance Result:
         --name "sample" \
         --deploy-mode cluster \
         --class "SampleResult" \
-        --conf spark.kubernetes.file.upload.path=alluxio://${ALLUXIO_SVC}/tony \
+        --conf spark.kubernetes.file.upload.path=alluxio://${ALLUXIO_SVC}/${SPARK_DEPENDENCY_DIR} \
         file://${CI_PROJECT_DIR}/sampleresult_2.12-0.1.jar
 
 TPCDS:
