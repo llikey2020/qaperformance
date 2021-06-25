@@ -32,7 +32,9 @@ variables:
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
-  SPARK_DEPENDENCY_DIR: spark-files/
+  SPARK_DEPENDENCY_DIR:
+    value: spark-files/performance/
+    description: Path in Alluxio UFS for the Spark SQL jar(s)
   SPARK_DRIVER_POD_NAME: spark-driver
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
