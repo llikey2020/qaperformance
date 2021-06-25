@@ -179,7 +179,7 @@ Collect logs:
     PARSED_RESULT: ${CI_JOB_STARTED_AT}.log
   script:
     - kubectl logs spark-driver > ${SPARK_LOG}
-    - bash perfLogParser.sh ${SPARK_LOG} > ${PARSED_RESULT}
+    - bash perfLogParser.sh ${SPARK_LOG} | tee ${PARSED_RESULT}
   artifacts:
     paths:
       - ${PARSED_RESULT}
