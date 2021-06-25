@@ -72,7 +72,7 @@ variables:
     - cat spark-defaults.conf
 
 Setup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   stage: setup
   extends:
     - .environment
@@ -182,7 +182,7 @@ Collect logs:
       - ${PARSED_RESULT}
 
 Cleanup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   stage: cleanup
   extends:
     - .environment
