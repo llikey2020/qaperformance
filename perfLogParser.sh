@@ -5,8 +5,6 @@ perfLogs="$1"    # file containing the entire log of the performance run
 # CREATE_TIME=`date +"%Y-%m-%d-%H.%M.%S.%3N"`
 # DATE_TIME=`echo "$CREATE_TIME" | tr '-' '_' | tr '.' '_'`
 
-perfResults="${PARSED_RESULT}"
-
 # NAME="name"
 # PARSETIME="parsingTime"
 # ANALYSISTIME="analysisTime"
@@ -31,7 +29,6 @@ function parseFields()
     local entryNum=$2
 
     line=$( echo ${line} | tr -d " " | tr "|" " " )
-    # echo $line
 
     for field in ${!fields[@]}; do
         row[${field}]+=$( echo $line | awk "{print \$${fields[$field]}}" )
@@ -47,29 +44,28 @@ function parseFields()
     done
     row[TOTALTIME]+=$totalTime
 
-    echo "" >> "${perfResults}"
+    echo ""
     for field in ${resultFields[@]}; do
-        echo $field: ${row[$field]} >> "${perfResults}"
+        echo $field: ${row[$field]}
     done
 
     # clear the map for the next entry in the tpch results
     unset row
 }
 
-printf "%-24s %s\n" TIME: "${CI_JOB_STARTED_AT}" >> "${perfResults}"
-printf "%-24s %s\n" JOB: "${JOB}" >> "${perfResults}"
-printf "%-24s %s\n" SPARK_IMAGE: "${SPARK_IMAGE}" >> "${perfResults}"
-printf "%-24s %s\n" SPARK_DRIVER_MEMORY: "${SPARK_DRIVER_MEMORY}" >> "${perfResults}"
-printf "%-24s %s\n" SPARK_EXECUTOR_MEMORY: "${SPARK_EXECUTOR_MEMORY}" >> "${perfResults}"
-printf "%-24s %s\n" CACHE_SSD_SIZE: "${CACHE_SSD_SIZE}" >> "${perfResults}"
-printf "%-24s %s\n" SPARK_SQL_PERF_JAR: "${SPARK_SQL_PERF_JAR}" >> "${perfResults}"
-printf "%-24s %s\n" ALLUXIO_VERSION: "${ALLUXIO_VERSION}" >> "${perfResults}"
-printf "%-24s %s\n\n" SPARK_DRIVER_POD_NAME: "${SPARK_DRIVER_POD_NAME}" >> "${perfResults}"
+printf "%-24s %s\n" TIME: "${CI_JOB_STARTED_AT}"
+printf "%-24s %s\n" JOB: "${JOB}"
+printf "%-24s %s\n" SPARK_IMAGE: "${SPARK_IMAGE}"
+printf "%-24s %s\n" SPARK_DRIVER_MEMORY: "${SPARK_DRIVER_MEMORY}"
+printf "%-24s %s\n" SPARK_EXECUTOR_MEMORY: "${SPARK_EXECUTOR_MEMORY}"
+printf "%-24s %s\n" CACHE_SSD_SIZE: "${CACHE_SSD_SIZE}"
+printf "%-24s %s\n" SPARK_SQL_PERF_JAR: "${SPARK_SQL_PERF_JAR}"
+printf "%-24s %s\n" ALLUXIO_VERSION: "${ALLUXIO_VERSION}"
+printf "%-24s %s\n\n" SPARK_DRIVER_POD_NAME: "${SPARK_DRIVER_POD_NAME}"
 
 # Filter out all the log messages except for the table containing the final results
-cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' | tr -d '\000' >> "${perfResults}"
-echo "" >> "${perfResults}"
-
+tableResult=`cat "$perfLogs" | grep -oPz '(?s)\+---.*---\+' | tr -d '\000'`
+printf "%s\n" "${tableResult}"
 
 entryNum=0
 
@@ -83,8 +79,4 @@ do
     parseFields "${line}" $entryNum
     (( entryNum+=1 ))
   fi
-done < "${perfResults}"
-
-
-# remove this later
-cat "${perfResults}"
+done < <(printf '%s\n' "${tableResult}")
