@@ -32,7 +32,6 @@ variables:
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
-  HTTP_SVC: file-server
   SPARK_DRIVER_POD_NAME: spark-driver
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
@@ -80,7 +79,6 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
-    - 'ls *.jar'
 
 Verify docker image:
   rules:
