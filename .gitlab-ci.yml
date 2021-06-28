@@ -28,7 +28,7 @@ variables:
     description: Path in Alluxio UFS for the Spark SQL warehouse files
   SPARK_SQL_PERF_JAR:
     value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
-    description: Path in Alluxio UFS for the Spark SQL performance jar
+    description: Path to package registry for the Spark SQL performance jar
   ALLUXIO_VERSION:
     value: 2.6.0
   ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
@@ -133,7 +133,7 @@ TPCDS:
         --deploy-mode cluster \
         --name "tpcds" \
         --class com.databricks.spark.sql.perf.RunTPCDS \
-        alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
+        ${CI_API_V4_URL}/projects/13/packages/generic/spark-sql-perf/0.5.1/spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar?job_token=${CI_JOB_TOKEN}
 
 TPCH-small-partition:
   rules:
@@ -149,7 +149,7 @@ TPCH-small-partition:
         --deploy-mode cluster \
         --name "tpch small partition" \
         --class com.databricks.spark.sql.perf.RunTPCHSmallDatePartition \
-        alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
+        ${CI_API_V4_URL}/projects/13/packages/generic/spark-sql-perf/0.5.1/spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar?job_token=${CI_JOB_TOKEN}
 
 TPCH-large-partition:
   rules:
@@ -165,7 +165,7 @@ TPCH-large-partition:
         --deploy-mode cluster \
         --name "tpch parge partition" \
         --class com.databricks.spark.sql.perf.RunTPCHLargeDatePartition \
-        alluxio://${ALLUXIO_SVC}/${SPARK_SQL_PERF_JAR}
+        ${CI_API_V4_URL}/projects/13/packages/generic/spark-sql-perf/0.5.1/spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar?job_token=${CI_JOB_TOKEN}
 
 Collect logs:
   rules:
@@ -179,6 +179,7 @@ Collect logs:
     PARSED_RESULT: ${CI_JOB_STARTED_AT}.log
   script:
     - kubectl logs spark-driver > ${SPARK_LOG}
+    - cat ${SPARK_LOG}
     - bash perfLogParser.sh ${SPARK_LOG} | tee ${PARSED_RESULT}
   artifacts:
     paths:
