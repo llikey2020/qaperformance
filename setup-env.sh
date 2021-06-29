@@ -40,4 +40,5 @@ helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openS
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /${SPARK_EVENTLOG_DIR} || true
+ls /opt/spark
 /opt/spark/sbin/start-history-server.sh
