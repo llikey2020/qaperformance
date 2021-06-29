@@ -86,6 +86,7 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
+    - ls /opt/spark
 
 Verify docker image:
   rules:
@@ -95,6 +96,7 @@ Verify docker image:
     - .spark-run
   stage: run
   script:
+    - ls /opt/spark
     - cd /opt/spark
     - |
       ./bin/spark-submit \
