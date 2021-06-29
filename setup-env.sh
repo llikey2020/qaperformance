@@ -38,3 +38,6 @@ EOF
 
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
+
+kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /${SPARK_EVENTLOG_DIR} || true
+/opt/spark/sbin/start-history-server.sh

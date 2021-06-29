@@ -35,6 +35,7 @@ variables:
   SPARK_DEPENDENCY_DIR:
     value: spark-files/performance/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_EVENTLOG_DIR: spark-logs/performance
   SPARK_DRIVER_POD_NAME: spark-driver
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
@@ -71,6 +72,9 @@ variables:
       spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
+      spark.eventLog.enabled                                  true
+      spark.eventLog.dir                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
+      spark.history.fs.logDirectory                           alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
       EOF
     - cat spark-defaults.conf
 
