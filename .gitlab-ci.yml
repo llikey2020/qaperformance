@@ -95,7 +95,8 @@ Verify docker image:
     - .spark-run
   stage: run
   script:
-    - ls /opt/spark
+    - ls /opt/spark/sbin
+    - /opt/spark/sbin/start-history-server.sh
     - cd /opt/spark
     - |
       ./bin/spark-submit \
