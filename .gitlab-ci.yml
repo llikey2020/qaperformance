@@ -86,7 +86,6 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
-    - ls /opt/spark
 
 Verify docker image:
   rules:
