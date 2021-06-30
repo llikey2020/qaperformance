@@ -40,6 +40,21 @@ helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openS
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
 cat << EOF > history.yaml
+pvc:
+  # to use a file system path for Spark events dir, set 'enablePVC' to true and mention the
+  # name of an already created persistent volume claim in existingClaimName.
+  # The volume will be mounted on /data in the pod
+  enablePVC: false
+  existingClaimName: nfs-pvc
+  eventsDir: "/"
+
+# Settings for the sub-chart
+# When pvc.enablePVC is true, make sure:
+# pvc.existingClaimName == nfs.pvcName
+nfs:
+  enableExampleNFS: false
+  pvName: nfs-pv
+  pvcName: nfs-pvc
 s3:
   enableS3: true
   enableIAM: false
