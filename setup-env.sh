@@ -74,7 +74,7 @@ echo -n "${AWS_SECRET_ACCESS_KEY}" > aws-secret-key
 kubectl create secret generic aws-secrets --from-file=aws-access-key --from-file=aws-secret-key
 
 helm repo add stable https://charts.helm.sh/stable
-helm install stable/spark-history-server -f history.yaml
+helm install spark-history stable/spark-history-server -f history.yaml
 
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /${SPARK_EVENTLOG_DIR} || true
 #ls /opt/spark

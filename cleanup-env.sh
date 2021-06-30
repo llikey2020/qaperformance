@@ -9,6 +9,6 @@ kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_DE
 helm uninstall alluxio alluxio-charts/alluxio || true
 kubectl delete pod ${SPARK_DRIVER_POD_NAME} --wait=true --ignore-not-found=true
 
-helm uninstall stable/spark-history-server || true
+helm uninstall spark-history stable/spark-history-server || true
 
 #/opt/spark/sbin/stop-history-server.sh
