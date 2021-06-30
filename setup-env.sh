@@ -54,7 +54,7 @@ s3:
   endpoint: default
 EOF
 
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo add stable https://charts.helm.sh/stable
 helm install spark-history stable/spark-history-server -f history.yaml
 
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /${SPARK_EVENTLOG_DIR} || true
