@@ -39,6 +39,24 @@ EOF
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
+cat << EOF > history.yaml
+s3:
+  enableS3: true
+  enableIAM: false
+  # Omit for IAM role-based or provider-based authentication.
+  secret:
+  # accessKeyName is an AWS access key ID. Omit for IAM role-based or provider-based authentication.
+  accessKeyName: ${AWS_ACCESS_KEY_ID}
+  # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
+  secretKeyName: ${AWS_SECRET_ACCESS_KEY}
+  logDirectory: ${ALLUXIO_UFS}spark-logs/performance
+  # custom s3 endpoint. Keep default for using aws s3 endpoint
+  endpoint: default
+EOF
+
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm install spark-history stable/spark-history-server -f history.yaml
+
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /${SPARK_EVENTLOG_DIR} || true
 #ls /opt/spark
 #/opt/spark/sbin/start-history-server.sh
