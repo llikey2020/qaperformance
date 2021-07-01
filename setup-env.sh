@@ -66,7 +66,8 @@ nfs:
 
 service:
   type: NodePort
-  port: 18080
+  port:
+    number: 18080
   annotations: {}
 EOF
 
