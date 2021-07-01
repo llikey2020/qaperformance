@@ -71,6 +71,6 @@ service:
 EOF
 
 helm repo add stable https://charts.helm.sh/stable
-helm install -f values.yaml stable/spark-history-server --namespace performance-47-testing
+helm install -f values.yaml spark-history-server stable/spark-history-server --namespace performance-47-testing
 
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /${SPARK_EVENTLOG_DIR} || true
