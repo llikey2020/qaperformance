@@ -69,6 +69,9 @@ service:
   port:
     number: 18080
   annotations: {}
+
+rbac:
+  create: false
 EOF
 
 helm repo add stable https://charts.helm.sh/stable
