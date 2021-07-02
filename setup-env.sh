@@ -39,8 +39,8 @@ EOF
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
-echo -n "${AWS_ACCESS_KEY_ID}" > aws-access-key
-echo -n "${AWS_SECRET_ACCESS_KEY}" > aws-secret-key
+echo -n "AKIA6RHRZAMGKZVA6XZX" > aws-access-key
+echo -n "eKIABU46dzeFcU0eZOwNAjEozbrSr4K/5caMfMfE" > aws-secret-key
 kubectl create secret generic aws-secrets --from-file=aws-access-key --from-file=aws-secret-key
 
 cat << EOF > values.yaml
@@ -48,7 +48,7 @@ s3:
   enableS3: true
   enableIAM: false
   secret: aws-secrets
-  logDirectory: alluxio://${ALLUXIO_SVC}/spark-logs/performance
+  logDirectory: s3://spark-history-bucket/spark-log/
   # accessKeyName is an AWS access key ID. Omit for IAM role-based or provider-based authentication.
   accessKeyName: aws-access-key
   # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
