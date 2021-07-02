@@ -48,7 +48,7 @@ s3:
   enableS3: true
   enableIAM: false
   secret: aws-secrets
-  logDirectory: ${ALLUXIO_UFS}/spark-logs/performance
+  logDirectory: alluxio://${ALLUXIO_SVC}/spark-logs/performance
   # accessKeyName is an AWS access key ID. Omit for IAM role-based or provider-based authentication.
   accessKeyName: aws-access-key
   # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
