@@ -39,12 +39,6 @@ EOF
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
-# KUBE_NAMESPACE=performance-47-testing
-# ALLUXIO_SVC=alluxio-master-0.${KUBE_NAMESPACE}:19998
-# SPARK_IMAGE=gitlab.planetrover.io:5050/sequoiadp/spark:latest
-# SPARK_EVENTLOG_DIR=spark-logs/
-# HISTORY_SERVER_POD_NAME=history-server
-
 cat << EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment

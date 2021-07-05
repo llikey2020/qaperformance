@@ -35,6 +35,9 @@ variables:
   SPARK_DEPENDENCY_DIR:
     value: spark-files/performance/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_EVENT_LOG_ENABLED:
+    value: false
+    description: (true/false) Enable/disable spark event logging to persist Spark UI for the job
   SPARK_EVENTLOG_DIR: spark-logs/
   SPARK_DRIVER_POD_NAME: spark-driver
   HISTORY_SERVER_POD_NAME: history-server
@@ -73,7 +76,7 @@ variables:
       spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
-      spark.eventLog.enabled                                  true
+      spark.eventLog.enabled                                  ${SPARK_EVENT_LOG_ENABLED}
       spark.eventLog.dir                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
       EOF
     - cat spark-defaults.conf
