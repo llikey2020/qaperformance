@@ -73,6 +73,8 @@ variables:
       spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
+      spark.eventLog.enabled                                  true
+      spark.eventLog.dir                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
       EOF
     - cat spark-defaults.conf
 
