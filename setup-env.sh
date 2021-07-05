@@ -38,3 +38,54 @@ EOF
 
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
 helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
+
+cat << EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${HISTORY_SERVER_POD_NAME}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${HISTORY_SERVER_POD_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${HISTORY_SERVER_POD_NAME}
+    spec:
+      containers:
+      - image: ${SPARK_IMAGE}
+        name: ${HISTORY_SERVER_POD_NAME}
+        volumeMounts:
+        - mountPath: /opt/spark/logs
+          name: log-vol
+        command:
+        - '/opt/spark/sbin/start-history-server.sh'
+        env:
+        - name: SPARK_NO_DAEMONIZE
+          value: "false"
+        - name: SPARK_HISTORY_OPTS
+          value: "-Dspark.history.fs.logDirectory=alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}"
+        ports:
+        - name: http
+          containerPort: 18080
+          protocol: TCP
+      volumes:
+      - name: log-vol
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${HISTORY_SERVER_POD_NAME}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 18080
+    protocol: TCP
+    name: ${HISTORY_SERVER_POD_NAME}
+  selector:
+    app: ${HISTORY_SERVER_POD_NAME}
+EOF
