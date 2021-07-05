@@ -74,7 +74,7 @@ spec:
         - name: SPARK_NO_DAEMONIZE
           value: "false"
         - name: SPARK_HISTORY_OPTS
-          value: "-Dspark.history.fs.logDirectory=alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
+          value: "-Dspark.history.fs.logDirectory=alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}"
         ports:
         - name: http
           containerPort: 18080
