@@ -45,7 +45,9 @@ helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 # SPARK_EVENTLOG_DIR=spark-logs/
 # HISTORY_SERVER_POD_NAME=history-server
 
-cat << EOF | kubectl apply -f -
+history_server_conf=history-server.yaml
+
+cat << EOF > ${history_server_conf}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -95,3 +97,5 @@ spec:
   selector:
     app: ${HISTORY_SERVER_POD_NAME}
 EOF
+
+kubectl apply -f ${history_server_conf}
