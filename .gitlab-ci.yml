@@ -36,7 +36,7 @@ variables:
     value: spark-files/performance/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
   SPARK_EVENT_LOG_ENABLED:
-    value: false
+    value: "false"
     description: (true/false) Enable/disable spark event logging to persist Spark UI for the job
   SPARK_EVENTLOG_DIR: spark-logs/
   SPARK_DRIVER_POD_NAME: spark-driver
