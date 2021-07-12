@@ -185,9 +185,9 @@ Collect logs:
     SPARK_LOG: spark.log
     PARSED_RESULT: ${CI_JOB_STARTED_AT}.log
   script:
-    - kubectl logs spark-driver > ${SPARK_LOG}
-    - cat ${SPARK_LOG}
+    - kubectl logs spark-driver | tee ${SPARK_LOG}
     - bash perfLogParser.sh ${SPARK_LOG} | tee ${PARSED_RESULT}
+    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fsadmin report metrics
   artifacts:
     paths:
       - ${PARSED_RESULT}
