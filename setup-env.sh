@@ -36,8 +36,9 @@ tieredstore:
       type: emptyDir
 EOF
 
-helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
-helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
+wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/53/packages/generic/alluxio-helm-chart/0.6.22/alluxio-0.6.22.tgz
+tar -zxf alluxio-0.6.22.tgz
+helm install alluxio -f alluxio.yaml --set journal.format.runFormat=true alluxio/ --wait
 
 cat << EOF | kubectl apply -f -
 apiVersion: apps/v1
