@@ -4,7 +4,6 @@ set -ex
 
 # The ALLUXIO_UFS and AWS_* env vars need to be setup before running
 # In GitLab, these are stored as project variables in Settings -> CI/CD -> Variables
-
 cat << EOF > alluxio.yaml
 properties:
     alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
@@ -36,9 +35,12 @@ tieredstore:
       type: emptyDir
 EOF
 
-wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/53/packages/generic/alluxio-helm-chart/0.6.22/alluxio-0.6.22.tgz
-tar -zxf alluxio-0.6.22.tgz
-helm install alluxio -f alluxio.yaml --set journal.format.runFormat=true alluxio/ --wait
+# Checking the status will fail if the service is not installed
+if ! helm status alluxio ; then
+  wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/53/packages/generic/alluxio-helm-chart/0.6.22/alluxio-0.6.22.tgz
+  tar -zxf alluxio-0.6.22.tgz
+  helm install alluxio -f alluxio.yaml --set journal.format.runFormat=true alluxio/ --wait
+fi
 
 cat << EOF | kubectl apply -f -
 apiVersion: apps/v1
