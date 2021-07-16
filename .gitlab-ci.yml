@@ -8,6 +8,11 @@ stages:
   - cleanup
 
 variables:
+  RUN_CONDITION:
+    value: cold
+    description: |
+      (cold/warm) Whether to clear Alluxio cache or not before the run. 
+      Manually starting the cleanup stage after the run will still clear Alluxio cache regardless
   JOB:
     value: JavaWordCount
     description: JavaWordCount, SampleResult, RunTPCDS, RunTPCHSmallDatePartition, RunTPCHLargeDatePartition
@@ -183,11 +188,12 @@ Collect logs:
     - .environment
   variables:
     SPARK_LOG: spark.log
+    ALLUXIO_LOG: alluxio.log
     PARSED_RESULT: ${CI_JOB_STARTED_AT}.log
   script:
     - kubectl logs spark-driver | tee ${SPARK_LOG}
-    - bash perfLogParser.sh ${SPARK_LOG} | tee ${PARSED_RESULT}
-    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fsadmin report metrics
+    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fsadmin report metrics | tee ${ALLUXIO_LOG}
+    - bash perfLogParser.sh ${SPARK_LOG} ${ALLUXIO_LOG} | tee ${PARSED_RESULT}
   artifacts:
     paths:
       - ${PARSED_RESULT}
@@ -197,6 +203,8 @@ Cleanup environment:
   stage: cleanup
   extends:
     - .environment
+  variables:
+    IS_MANUAL: "true"
   when: manual
   script:
     - bash cleanup-env.sh
