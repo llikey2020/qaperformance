@@ -42,7 +42,7 @@ if ! helm status alluxio ; then
   helm install alluxio -f alluxio.yaml --set journal.format.runFormat=true alluxio/ --wait
 fi
 
-cat << EOF | kubectl apply -f -
+cat << EOF > history-server.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -60,6 +60,7 @@ spec:
       containers:
       - image: ${SPARK_IMAGE}
         name: ${HISTORY_SERVER_POD_NAME}
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /opt/spark/logs
           name: log-vol
@@ -92,3 +93,7 @@ spec:
   selector:
     app: ${HISTORY_SERVER_POD_NAME}
 EOF
+
+if [[ ${SPARK_HISTORY_SERVER_ENABLED} == "true" ]]; then
+  kubectl apply -f history-server.yaml
+fi

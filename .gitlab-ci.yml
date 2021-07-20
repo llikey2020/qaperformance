@@ -1,3 +1,9 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - when: always
+
 default:
   tags: ["kubernetes"]
 
@@ -40,6 +46,9 @@ variables:
   SPARK_DEPENDENCY_DIR:
     value: spark-files/performance/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_HISTORY_SERVER_ENABLED:
+    value: "false"
+    description: (true/false) Enable/disable spark history server
   SPARK_EVENT_LOG_ENABLED:
     value: "false"
     description: (true/false) Enable/disable spark event logging to persist Spark UI for the job
