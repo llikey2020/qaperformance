@@ -42,60 +42,10 @@ if ! helm status alluxio ; then
   helm install alluxio -f alluxio.yaml --set journal.format.runFormat=true alluxio/ --wait
 fi
 
-cat << EOF > history-server.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ${HISTORY_SERVER_POD_NAME}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ${HISTORY_SERVER_POD_NAME}
-  template:
-    metadata:
-      labels:
-        app: ${HISTORY_SERVER_POD_NAME}
-    spec:
-      containers:
-      - image: ${SPARK_IMAGE}
-        name: ${HISTORY_SERVER_POD_NAME}
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - mountPath: /opt/spark/logs
-          name: log-vol
-        command:
-        - '/opt/spark/sbin/start-history-server.sh'
-        env:
-        - name: SPARK_NO_DAEMONIZE
-          value: "false"
-        - name: SPARK_HISTORY_OPTS
-          value: "-Dspark.history.fs.logDirectory=alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}"
-        ports:
-        - name: http
-          containerPort: 18080
-          protocol: TCP
-      volumes:
-      - name: log-vol
-        emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ${HISTORY_SERVER_POD_NAME}
-spec:
-  type: ClusterIP
-  ports:
-  - port: 80
-    targetPort: 18080
-    protocol: TCP
-    name: ${HISTORY_SERVER_POD_NAME}
-  selector:
-    app: ${HISTORY_SERVER_POD_NAME}
-EOF
-
 if [[ ${SPARK_HISTORY_SERVER_ENABLED} == "true" ]]; then
   wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/55/packages/generic/history-server-helm-chart/0.1.0/history-server-0.1.0.tgz
   tar -zxf history-server-0.1.0.tgz
   helm install history-server --set eventLog.alluxioService=${ALLUXIO_SVC} --set eventLog.dir=${SPARK_EVENTLOG_DIR} history-server/ --wait
 fi
+
+helm install spark-dashboard spark-dashboard/ --wait

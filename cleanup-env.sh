@@ -3,6 +3,7 @@
 set -ex
 
 helm uninstall history-server || true
+helm uninstall spark-dashboard || true
 
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
 kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true

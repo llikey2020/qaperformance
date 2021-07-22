@@ -54,3 +54,15 @@ kubectl port-forward --address 0.0.0.0 alluxio-master-0 8000:19999
 ```
 Then enter localhost:8000 in your browser.  
 For more information about Alluxio UI visit: https://docs.alluxio.io/os/user/stable/en/operation/Web-Interface.html
+
+- #### Spark dashboard
+This project also deploys a Grafana dashboard that visualizes important metrics outputted from the Spark job.  
+Port-forward to the Grafana service at port 3000 to view the dashboard, for e.g.:
+```
+# Make sure you use the correct namespace
+kubectl port-forward --address 0.0.0.0 service/spark-dashboard-grafana 3000:3000
+```
+Then enter localhost:3000 in your browser.  
+Login with admin:admin  
+On the top left of the page click "General / Home" -> Spark_Perf_Dashboard_v03  
+For more information about the Spark dashboard visit: https://github.com/cerndb/spark-dashboard
