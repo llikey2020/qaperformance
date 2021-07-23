@@ -70,8 +70,7 @@ printf "%-24s %s\n" SPARK_SQL_PERF_JAR: "${SPARK_SQL_PERF_JAR}"
 printf "%-24s %s\n" ALLUXIO_VERSION: "${ALLUXIO_VERSION}"
 printf "%-24s %s\n\n" SPARK_DRIVER_POD_NAME: "${SPARK_DRIVER_POD_NAME}"
 
-cat "$alluxioLogs" | grep "Cluster.BytesReadRemote  (Type: COUNTER"
-cat "$alluxioLogs" | grep "Cluster.BytesReadUfsAll"
+cat "$alluxioLogs" | grep "Cluster.BytesReadRemote  (Type: COUNTER\|Cluster.BytesReadUfsAll\|Cluster.CapacityUsedTierSSD"
 echo ""
 
 # Filter out all the log messages except for the table containing the final results

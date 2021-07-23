@@ -29,13 +29,13 @@ variables:
     value: 4g
     description: spark.driver.memory
   SPARK_EXECUTOR_MEMORY:
-    value: 16g
+    value: 40g
     description: spark.executor.memory
   SPARK_EXECUTOR_CORES:
-    value: 4
+    value: 8
     description: spark.executor.cores
   SPARK_EXECUTOR_REQUEST_CORES:
-    value: 4000m
+    value: 8000m
     description: spark.kubernetes.executor.request.cores
   SPARK_DYNAMIC_ALLOCATION_ENABLED:
     value: "false"
@@ -227,7 +227,7 @@ Collect logs:
   variables:
     SPARK_LOG: spark.log
     ALLUXIO_LOG: alluxio.log
-    PARSED_RESULT: ${CI_JOB_STARTED_AT}.log
+    PARSED_RESULT: ${CI_JOB_STARTED_AT}_${RUN_CONDITION}_${CACHE_SSD_SIZE}.log
   script:
     - kubectl logs spark-driver | tee ${SPARK_LOG}
     - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fsadmin report metrics | tee ${ALLUXIO_LOG}
