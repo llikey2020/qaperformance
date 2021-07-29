@@ -12,3 +12,4 @@ if [[ ${RUN_CONDITION} == "cold" || ${IS_MANUAL} == "true" ]]; then
 fi
 
 kubectl delete pod ${SPARK_DRIVER_POD_NAME} --wait=true --ignore-not-found=true
+kubectl delete secret ${SPARK_REGISTRY_LOGIN_SECRET}

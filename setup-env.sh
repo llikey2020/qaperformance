@@ -49,3 +49,5 @@ if [[ ${SPARK_HISTORY_SERVER_ENABLED} == "true" ]]; then
 fi
 
 helm install spark-dashboard spark-dashboard/ --wait
+
+kubectl create secret docker-registry ${SPARK_REGISTRY_LOGIN_SECRET} --namespace=${KUBE_NAMESPACE} --docker-server=${CI_REGISTRY} --docker-username=${SPARK_QA_REGISTRY_USER} --docker-password=${SPARK_QA_REGISTRY_TOKEN}

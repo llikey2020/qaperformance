@@ -17,7 +17,7 @@ alluxioLogs="$2"
 declare -A fields=( [NAME]=1 [PARSETIME]=6 [ANALYSISTIME]=7 [OPTIMIZETIME]=8 [PLANTIME]=9 [EXECUTETIME]=10 )
 
 resultFields=( "NAME" "PARSETIME" "ANALYSISTIME" "OPTIMIZETIME" "PLANTIME" "EXECUTETIME" "TOTALTIME" )
-
+benchmarkTotalTime=0
 
 # Takes in one line in the tpch result table and parses the results into the row map
 function parseFields()
@@ -36,18 +36,20 @@ function parseFields()
     done
 
     # Calculate total time, we are ignoring values with "E-". They are insignificantly small.
-    local totalTime=0
+    local queryTotalTime=0
     for field in ${!fields[@]}; do
         if [[ ${field} != "NAME" ]]; then
             [[ "${row[${field}]}" == *"E-"* ]] && continue
-            totalTime=$( echo - | awk "{printf \"%f\", ${totalTime} + ${row[${field}]}}" )
+            queryTotalTime=$( echo - | awk "{printf \"%f\", ${queryTotalTime} + ${row[${field}]}}" )
         fi
     done
-    row[TOTALTIME]+=$totalTime
+    row[TOTALTIME]+=$queryTotalTime
+
+    benchmarkTotalTime=$( echo - | awk "{printf \"%f\", ${benchmarkTotalTime} + ${queryTotalTime}}" )
 
     echo ""
     for field in ${resultFields[@]}; do
-        echo $field: ${row[$field]}
+        printf "%-13s %s\n" "$field:" "${row[$field]}"
     done
 
     # clear the map for the next entry in the tpch results
@@ -90,3 +92,6 @@ do
     (( entryNum+=1 ))
   fi
 done < <(printf '%s\n' "${tableResult}")
+
+echo ""
+printf "%-13s %s\n" "DURATION:" "${benchmarkTotalTime}"
