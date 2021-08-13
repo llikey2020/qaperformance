@@ -128,7 +128,7 @@ variables:
     - cat spark-defaults.conf
 
 Setup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: setup
   extends:
     - .environment
@@ -223,7 +223,7 @@ TPCH-large-partition:
 Collect logs:
   rules:
     - if: '$JOB != "JavaWordCount"'
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm
+  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: collect
   extends:
     - .environment
@@ -240,7 +240,7 @@ Collect logs:
       - ${PARSED_RESULT}
 
 Cleanup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: cleanup
   extends:
     - .environment
