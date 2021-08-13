@@ -132,6 +132,9 @@ Setup environment:
   stage: setup
   extends:
     - .environment
+  before_script:
+    - apt-get update
+    - apt-get install -y wget
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
