@@ -13,6 +13,9 @@ properties:
     alluxio.underfs.s3.inherit.acl: false
     alluxio.security.authentication.type: NOSASL
     alluxio.security.authorization.permission.enabled: false
+    alluxio.user.ufs.block.read.location.policy: alluxio.client.block.policy.DeterministicHashPolicy
+    alluxio.user.ufs.block.read.location.policy.deterministic.hash.shards: 1
+    alluxio.user.file.passive.cache.enabled: false
 journal:
     type: UFS
     ufsType: local
@@ -22,6 +25,26 @@ journal:
     medium: ""
 master:
     count: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+jobMaster:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+worker:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+jobWorker:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+
 shortCircuit:
     enabled: false
 tieredstore:

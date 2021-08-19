@@ -29,13 +29,13 @@ variables:
     value: 4g
     description: spark.driver.memory
   SPARK_EXECUTOR_MEMORY:
-    value: 40g
+    value: 8g
     description: spark.executor.memory
   SPARK_EXECUTOR_CORES:
-    value: 8
+    value: 1
     description: spark.executor.cores
   SPARK_EXECUTOR_REQUEST_CORES:
-    value: 8000m
+    value: 1000m
     description: spark.kubernetes.executor.request.cores
   SPARK_DYNAMIC_ALLOCATION_ENABLED:
     value: "false"
