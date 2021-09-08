@@ -23,7 +23,7 @@ This project configures the environment and runs the performance tests for Spark
     In this stage, the Alluxio metrics and Spark job output and gathered, parsed and collected into a text file. The parsed file will be outputted as an artifact of the pipeline. When the pipeline finishes, you can head over to CI/CD -> Pipelines and in the collect job for the pipeline that was ran, you will be able to download the text file containing the parsed output on the right side of the page.
 
 - #### Cleanup environment
-    Cleanup can be triggered manually by setting the variable `ONLY_CLEANUP` to 'true'. This will clean up **all** services in the environment, as wel as the pull secret for docker images. This also has the same effect as clearing the Alluxio cache, so run with caution.
+    Cleanup can be triggered manually by setting the variable `ONLY_CLEANUP` to 'true'. This will clean up ALL services in the environment, as well as the pull secret for docker images. This also has the same effect as clearing the Alluxio cache, so run with caution.
 
 ## Running a performance benchmark
 To manually trigger run, head over to CI/CD -> Pipelines. On the top right, click "Run pipeline". You will see a page with configurations you can set for the performance run and when ready hit the "Run pipeline" button.
