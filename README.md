@@ -3,10 +3,11 @@
 This project configures the environment and runs the performance tests for Spark+Alluxio+S3 in the CI cluster.
 
 ## Pipeline Flow
-There are 4 stages to this project: setup, run, collect, cleanup
 
 - #### Setup environment
-    In the setup stage, we first perform a cleanup through the `cleanup-env.sh` script to clear the environment possibly leftover from previous runs. Then through the `setup-env.sh` script, we setup Alluxio (configurations for alluxio can be found in the setup script).
+    This project extends the Staging project, and uses the jobs from Staging to set up services in this environment. In addition, for cold runs, the Alluxio service will first be cleaned up from the performance environment.
+
+    See the [Staging documentation](https://gitlab.planetrover.io/sequoiadp/qa/staging/-/blob/master/README.md) for more information.
 
 - #### Run Spark Job
     There 5 Spark jobs supported in this project.  
@@ -22,7 +23,7 @@ There are 4 stages to this project: setup, run, collect, cleanup
     In this stage, the Alluxio metrics and Spark job output and gathered, parsed and collected into a text file. The parsed file will be outputted as an artifact of the pipeline. When the pipeline finishes, you can head over to CI/CD -> Pipelines and in the collect job for the pipeline that was ran, you will be able to download the text file containing the parsed output on the right side of the page.
 
 - #### Cleanup environment
-    The stage is triggered manually. This runs the `cleanup-env.sh` script which clears the environment left over from the run.
+    Cleanup can be triggered manually by setting the variable `ONLY_CLEANUP` to 'true'. This will clean up **all** services in the environment, as wel as the pull secret for docker images. This also has the same effect as clearing the Alluxio cache, so run with caution.
 
 ## Running a performance benchmark
 To manually trigger run, head over to CI/CD -> Pipelines. On the top right, click "Run pipeline". You will see a page with configurations you can set for the performance run and when ready hit the "Run pipeline" button.
