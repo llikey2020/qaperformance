@@ -7,7 +7,7 @@ This project configures the environment and runs the performance tests for Spark
 - #### Setup environment
     This project extends the Staging project, and uses the jobs from Staging to set up services in this environment. In addition, for cold runs, the Alluxio service will first be cleaned up from the performance environment.
 
-    See the [Staging documentation](https://gitlab.planetrover.io/sequoiadp/qa/staging/-/blob/master/README.md) for more information.
+    See the [Staging documentation](https://gitlab.planetrover.ca/sequoiadp/qa/staging/-/blob/master/README.md) for more information.
 
 - #### Run Spark Job
     There 5 Spark jobs supported in this project.  
@@ -17,7 +17,7 @@ This project configures the environment and runs the performance tests for Spark
     - RunTPCHSmallDatePartition: TPC-H SmallDatePartition benchmark.
     - RunTPCHLargeDatePartition: TPC-H LargeDatePartition benchmark.  
 
-    For more information on the benchmarks visit: https://gitlab.planetrover.io/sequoiadp/spark-sql-perf  
+    For more information on the benchmarks visit: https://gitlab.planetrover.ca/sequoiadp/spark-sql-perf  
 
 - #### Collect benchmark output
     In this stage, the Alluxio metrics and Spark job output and gathered, parsed and collected into a text file. The parsed file will be outputted as an artifact of the pipeline. When the pipeline finishes, you can head over to CI/CD -> Pipelines and in the collect job for the pipeline that was ran, you will be able to download the text file containing the parsed output on the right side of the page.

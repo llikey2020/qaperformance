@@ -16,7 +16,7 @@ variables:
   JOB:
     value: JavaWordCount
     description: JavaWordCount, SampleResult, RunTPCDS, RunTPCHSmallDatePartition, RunTPCHLargeDatePartition
-  DEPLOY_PROJECT: alluxio, history, sparkDashboard, schema, metadata
+  DEPLOY_PROJECT: alluxio, history, mysql, sparkDashboard, schema, metadata
   SPARK_IMAGE_TAG:
     value: latest
     description: Spark container image tag to test
@@ -62,7 +62,7 @@ variables:
   SPARK_EVENT_LOG_ENABLED:
     value: "false"
     description: (true/false) Enable/disable spark event logging to persist Spark UI for the job
-  SPARK_VERSION: 3.0.2-sdp-SNAPSHOT
+  SPARK_VERSION: 3.1.2-sdp-SNAPSHOT
   # Project variables configured in Settings -> CI/CD -> Variables:
   # - ALLUXIO_UFS
   # - AWS_ACCESS_KEY_ID
@@ -83,7 +83,7 @@ Prepare environment:
 
 Verify docker image:
   rules:
-    - if: '$JOB == "JavaWordCount"'
+    - if: '$JOB == "JavaWordCount" && $ONLY_CLEANUP == "false"'
   extends:
     - .environment
     - .spark-run
@@ -100,7 +100,7 @@ Verify docker image:
 
 Sample Performance Result:
   rules:
-    - if: '$JOB == "SampleResult"'
+    - if: '$JOB == "SampleResult" && $ONLY_CLEANUP == "false"'
   extends:
     - .environment
     - .spark-run
@@ -119,7 +119,7 @@ Sample Performance Result:
 
 TPCDS:
   rules:
-    - if: '$JOB == "RunTPCDS"'
+    - if: '$JOB == "RunTPCDS" && $ONLY_CLEANUP == "false"'
   extends:
     - .environment
     - .spark-run
@@ -135,7 +135,7 @@ TPCDS:
 
 TPCH-small-partition:
   rules:
-    - if: '$JOB == "RunTPCHSmallDatePartition"'
+    - if: '$JOB == "RunTPCHSmallDatePartition" && $ONLY_CLEANUP == "false"'
   extends:
     - .environment
     - .spark-run
@@ -167,7 +167,7 @@ TPCH-large-partition:
 
 Collect logs:
   rules:
-    - if: '$JOB != "JavaWordCount"'
+    - if: '$JOB != "JavaWordCount" && $ONLY_CLEANUP == "false"'
   image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: collect
   extends:
