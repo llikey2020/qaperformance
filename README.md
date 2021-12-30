@@ -69,3 +69,5 @@ On the top left of the page click "General / Home" -> Spark_Perf_Dashboard_v03
 For more information about the Spark dashboard visit: https://github.com/cerndb/spark-dashboard
 
 **Currently, the namespace for the performance environment is `performance-47-testing`.**
+
+To see more details on the Performance pipelines, see [here](https://gitlab.planetrover.ca/sequoiadp/qa/performance/-/wikis/home).
