@@ -67,3 +67,5 @@ Then enter localhost:3000 in your browser.
 Login with admin:admin  
 On the top left of the page click "General / Home" -> Spark_Perf_Dashboard_v03  
 For more information about the Spark dashboard visit: https://github.com/cerndb/spark-dashboard
+
+**Currently, the namespace for the performance environment is `performance-47-testing`.**
