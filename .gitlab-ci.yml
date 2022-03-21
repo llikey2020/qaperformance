@@ -5,10 +5,11 @@ workflow:
     - when: always
 
 default:
-  tags: ["kubernetes"]
+  tags: ["${CI_RUNNER_TAG}"]
+
 
 .environment:
-  environment: testing
+  environment: "${CI_ENVIRONMENT}"
 
 include:
   # the order here matters: overrides from later files take precedence
