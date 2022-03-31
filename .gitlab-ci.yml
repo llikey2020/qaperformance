@@ -5,8 +5,10 @@ workflow:
     - when: always
 
 default:
-  tags: ["${CI_RUNNER_TAG}"]
+  tags: ["${GIT_RUNNER_TAG}"]
 
+variables:
+  GIT_RUNNER_TAG: "k8s-cluster-2"
 
 .environment:
   environment: "${CI_ENVIRONMENT}"
