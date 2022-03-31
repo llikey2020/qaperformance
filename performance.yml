@@ -1,6 +1,3 @@
-default:
-  tags: ["${GIT_RUNNER_TAG}"]
-
 stages:
   - prepare
   - deploy
@@ -11,7 +8,6 @@ stages:
   - cleanup
 
 variables:
-  GIT_RUNNER_TAG: "k8s-cluster-1"
   RUN_CONDITION:
     value: cold
     description: |
