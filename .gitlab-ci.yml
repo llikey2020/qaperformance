@@ -8,7 +8,7 @@ default:
   tags: ["${GIT_RUNNER_TAG}"]
 
 variables:
-  GIT_RUNNER_TAG: "k8s-cluster-2"
+  GIT_RUNNER_TAG: "k8s-cluster-1"
 
 .environment:
   environment: "${CI_ENVIRONMENT}"
