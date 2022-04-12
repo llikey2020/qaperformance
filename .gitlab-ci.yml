@@ -10,6 +10,10 @@ default:
 variables:
   CI_RUNNER_TAG: "k8s-cluster-1"
   CI_ENVIRONMENT: "k8s-cluster-1"
+  S3A_BUCKET_NAME: ""
+  S3A_ACCESS_KEY: ""
+  S3A_SECRET_KEY: ""
+  S3A_ENDPOINT: ""
 
 .environment:
   environment: "${CI_ENVIRONMENT}"
