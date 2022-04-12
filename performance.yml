@@ -71,8 +71,6 @@ variables:
 Prepare environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: prepare
-  extends:
-    - .environment
   script:
     - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
     - |
@@ -85,7 +83,6 @@ Verify docker image:
   rules:
     - if: '$JOB == "JavaWordCount" && $ONLY_CLEANUP == "false"'
   extends:
-    - .environment
     - .spark-run
   stage: run
   script:
@@ -102,7 +99,6 @@ Sample Performance Result:
   rules:
     - if: '$JOB == "SampleResult" && $ONLY_CLEANUP == "false"'
   extends:
-    - .environment
     - .spark-run
   variables:
     GIT_STRATEGY: clone
@@ -121,7 +117,6 @@ TPCDS:
   rules:
     - if: '$JOB == "RunTPCDS" && $ONLY_CLEANUP == "false"'
   extends:
-    - .environment
     - .spark-run
   stage: run
   script:
@@ -137,7 +132,6 @@ TPCH-small-partition:
   rules:
     - if: '$JOB == "RunTPCHSmallDatePartition" && $ONLY_CLEANUP == "false"'
   extends:
-    - .environment
     - .spark-run
   stage: run
   script:
@@ -153,7 +147,6 @@ TPCH-large-partition:
   rules:
     - if: '$JOB == "RunTPCHLargeDatePartition"'
   extends:
-    - .environment
     - .spark-run
   stage: run
   script:
@@ -170,8 +163,6 @@ Collect logs:
     - if: '$JOB != "JavaWordCount" && $ONLY_CLEANUP == "false"'
   image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: collect
-  extends:
-    - .environment
   variables:
     SPARK_LOG: spark.log
     ALLUXIO_LOG: alluxio.log
