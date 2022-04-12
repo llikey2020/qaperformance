@@ -16,8 +16,8 @@ variables:
 
 include:
   # the order here matters: overrides from later files take precedence
-  - project: sequoiadp/qa/staging-downstream
+  - project: sequoiadp/qa/staging
     file: staging.yml
-  - project: sequoiadp/qa/staging-downstream
+  - project: sequoiadp/qa/staging
     file: spark.yml
   - performance.yml
