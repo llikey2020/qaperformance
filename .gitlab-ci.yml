@@ -4,12 +4,12 @@ workflow:
       when: never
     - when: always
 
+variables:
+  CI_RUNNER_TAG: "k8s-cluster-2"
+  CI_ENVIRONMENT: "k8s-cluster-2"
+
 default:
   tags: ["${CI_RUNNER_TAG}"]
-
-variables:
-  CI_RUNNER_TAG: "k8s-cluster-1"
-  CI_ENVIRONMENT: "k8s-cluster-1"
 
 .environment:
   environment: "${CI_ENVIRONMENT}"
@@ -18,6 +18,8 @@ include:
   # the order here matters: overrides from later files take precedence
   - project: sequoiadp/qa/staging-upstream
     file: staging.yml
+    #ref: ci_pipeline
   - project: sequoiadp/qa/staging-upstream
     file: spark.yml
+    #ref: ci_pipeline
   - performance.yml

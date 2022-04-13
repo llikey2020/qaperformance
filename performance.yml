@@ -69,11 +69,18 @@ variables:
   # - AWS_SECRET_ACCESS_KEY
 
 Prepare environment:
+  rules:
+    - if: '$ONLY_CLEANUP == "false"'
   image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   stage: prepare
   script:
-    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
-    - |
+    - | 
+      env | sort
+
+      kubectl cluster-info
+
+      kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
+
       if [ ${RUN_CONDITION} == "cold" ]
       then
         helm uninstall alluxio || true
