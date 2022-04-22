@@ -79,11 +79,11 @@ Prepare environment:
 
       kubectl cluster-info
 
-      kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
+      kubectl delete pod ${SPARK_DRIVER_POD_NAME} -n ${SERVICE_NAMESPACE} --ignore-not-found=true
 
-      if [ ${RUN_CONDITION} == "cold" ]
+      if [ ${RUN_CONDITION} == "cold" ] && [ ${ENABLE_ALLUXIO} -eq 1 ]
       then
-        helm uninstall alluxio || true
+        helm uninstall alluxio -n ${SERVICE_NAMESPACE} || true
       fi 
 
 Verify docker image:
@@ -175,9 +175,13 @@ Collect logs:
     ALLUXIO_LOG: alluxio.log
     PARSED_RESULT: ${CI_JOB_STARTED_AT}_${RUN_CONDITION}_${CACHE_SSD_SIZE}.log
   script:
-    - kubectl logs spark-driver | tee ${SPARK_LOG}
-    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fsadmin report metrics | tee ${ALLUXIO_LOG}
-    - bash perf-run-files/perfLogParser.sh ${SPARK_LOG} ${ALLUXIO_LOG} | tee ${PARSED_RESULT}
+    - kubectl logs spark-driver -n ${SERVICE_NAMESPACE} | tee ${SPARK_LOG}
+    - |
+      if [ ${ENABLE_ALLUXIO} -eq 1 ]
+      then
+        kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fsadmin report metrics -n ${SERVICE_NAMESPACE} | tee ${ALLUXIO_LOG}
+        perf-run-files/perfLogParser.sh ${SPARK_LOG} ${ALLUXIO_LOG} | tee ${PARSED_RESULT}
+      fi
   artifacts:
     paths:
       - ${PARSED_RESULT}
