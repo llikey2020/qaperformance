@@ -5,8 +5,8 @@ workflow:
     - when: always
 
 variables:
-  CI_RUNNER_TAG: "k8s-cluster-2"
-  CI_ENVIRONMENT: "k8s-cluster-2"
+  CI_RUNNER_TAG: "k8s-cluster-1"
+  CI_ENVIRONMENT: "k8s-cluster-1"
 
 default:
   tags: ["${CI_RUNNER_TAG}"]
